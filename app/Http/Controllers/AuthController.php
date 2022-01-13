@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\LoginFormValidation;
-use App\Http\Requests\RegisterFormValidation;
+use App\Http\Requests\LoginFormRequest;
+use App\Http\Requests\RegisterFormRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function register(RegisterFormValidation $request){
+    public function register(RegisterFormRequest $request){
 
 
         $user = User::create([
@@ -34,7 +34,7 @@ class AuthController extends Controller
     }
 
 
-    public  function  login(LoginFormValidation $request){
+    public  function  login(LoginFormRequest $request){
 
        $user = User::where('email', $request['email'])->first();
 
