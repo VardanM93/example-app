@@ -8,6 +8,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * @method static where(string $string, string|null $email)
+ * @method static create(array $array)
+ */
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -42,3 +46,4 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 }
+

@@ -2,66 +2,85 @@
 
 namespace App\Http\Controllers;
 
+use App\Repositories\UserRepository;
 use App\Http\Requests\LoginFormRequest;
 use App\Http\Requests\RegisterFormRequest;
-use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class AuthController extends Controller
 {
-    public function register(RegisterFormRequest $request){
+    /**
+     * @var UserRepository
+     */
+    private  UserRepository $userRepository;
+
+    /**
+     * @param UserRepository $userRepository
+     */
+    public function __construct(UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
+    /**
+     * @param RegisterFormRequest $request
+     * @return JsonResponse
+     */
+    public function register(RegisterFormRequest $request):JsonResponse
+    {
 
 
-        $user = User::create([
-            'name' => $request['name'],
-            'email' => $request['email'],
-            'password' => bcrypt($request['password']),
-        ]);
+        $user = $this->userRepository->createEntity(
+            $request->name,
+            $request->email,
+            $request->password
+        );
 
 
         $token = $user->createToken('API Token')->plainTextToken;
-        $code = 200;
 
-        $response = [
-            'status' => 'success',
-            'massage' => 'successful registered',
-            'data' => $token,
 
-        ];
 
-        return response()->json([$response],$code);
+        return response()->json([
+            'data' => $token
+        ],
+            ResponseAlias::HTTP_CREATED);
 
     }
 
 
-    public  function  login(LoginFormRequest $request){
+    public  function  login(LoginFormRequest $request)
+    {
 
-       $user = User::where('email', $request['email'])->first();
+
+       $user = $this->userRepository->checkEntity($request->email);
 
 
-        if (!$user || !Hash::check($request['password'], $user->password)){
-
+        if (!$user || !Hash::check($request->password, $user->password))
+        {
             return response([
                 'message' => 'bad credentials'
-            ],401);
+            ],ResponseAlias::HTTP_FORBIDDEN);
         }
 
 
 
         $token = $user->createToken('API Token')->plainTextToken;
-        $code = 200;
 
-        $response = [
-            'status' => 'success',
-            'massage' => 'Logged in',
-            'data' => $token,
 
-        ];
-
-        return response()->json([$response],$code);
+        return response()->json([
+            'data' => $token
+        ],
+            ResponseAlias::HTTP_OK);
     }
 
-    public function logout(){
+    /**
+     * @return string[]
+     */
+    public function logout(): array
+    {
 
         auth()->user()->tokens()->delete();
 
