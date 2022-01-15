@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use App\Repositories\UserRepository;
 use App\Http\Requests\LoginFormRequest;
 use App\Http\Requests\RegisterFormRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
+
 
 class AuthController extends Controller
 {
@@ -39,16 +41,16 @@ class AuthController extends Controller
         );
 
 
-        $token = $user->createToken('API Token')->plainTextToken;
+        $user->token = $user->createToken('API Token')->plainTextToken;
 
 
 
-        return response()->json([
-            'data' => $token
-        ],
+        return response()->json(new UserResource($user),
             ResponseAlias::HTTP_CREATED);
 
     }
+
+
 
 
     public  function  login(LoginFormRequest $request)
