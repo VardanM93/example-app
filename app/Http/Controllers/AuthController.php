@@ -64,7 +64,7 @@ class AuthController extends Controller
         {
             return response([
                 'message' => 'bad credentials'
-            ],ResponseAlias::HTTP_FORBIDDEN);
+            ],ResponseAlias::HTTP_UNAUTHORIZED);
         }
 
 
