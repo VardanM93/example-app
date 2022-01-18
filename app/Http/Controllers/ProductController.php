@@ -26,12 +26,12 @@ class ProductController extends Controller
     }
 
 
-    public function  showAll(){
+    public function  showAll(): JsonResponse
+    {
 
         $products = $this->productRepository->showAllEntity();
 
 
-        dd($products);
         return response()->json(
             new ProductResource($products),
             ResponseAlias::HTTP_OK);

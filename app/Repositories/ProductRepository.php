@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Product;
+use App\Models\User;
 
 
 class ProductRepository
@@ -26,7 +27,7 @@ class ProductRepository
 
     public function showAllEntity()
     {
-          return Product::where('user_id',auth()->id())->get();
+        return User::find(auth()->id())->products;
     }
 
 

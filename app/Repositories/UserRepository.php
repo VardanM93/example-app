@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\Product;
 use App\Models\User;
 
 
@@ -32,5 +33,8 @@ class UserRepository
 
         return  User::where('email', $email)->first();
     }
+
+
+
 
 }

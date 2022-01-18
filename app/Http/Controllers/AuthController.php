@@ -33,7 +33,6 @@ class AuthController extends Controller
     public function register(RegisterFormRequest $request):JsonResponse
     {
 
-
         $user = $this->userRepository->createEntity(
             $request->name,
             $request->email,
