@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductRepository
 {
+
+    const IMAGE_PATH = "images/products/";
+
     /**
      * @param string $name
      * @param string $description
@@ -33,6 +36,7 @@ class ProductRepository
      */
     public function showAllEntity()
     {
+
         return User::find(auth()->id())->products;
     }
 
@@ -66,7 +70,19 @@ class ProductRepository
     public function deleteEntity(int $id): int
     {
 
-        return Product::destroy($id);
+        $product = Product::find($id);
+        $image = $product->image;
+
+
+        if ($result = $product->destroy($id))
+        {
+            if (Storage::exists(Storage::url(self::IMAGE_PATH).$image)){
+
+                Storage::delete(Storage::url(self::IMAGE_PATH).$image);
+            }
+        }
+
+        return $result;
 
     }
 
@@ -76,15 +92,16 @@ class ProductRepository
      */
     public function createImageEntity($image): ?string
     {
+
+
+
         if ($image){
 
-            $file = date('YmdHis') . '.' . $image->getClientOriginalExtension();
-            $path = 'images/products' . '/' . $file;
+            $fileName = $image->hashName();
 
+            Storage::put(Storage::url(self::IMAGE_PATH),$image);
 
-            Storage::disk('local')->put($path,$file,'public');
-
-            return $file;
+            return $fileName;
         }
 
 
@@ -101,9 +118,10 @@ class ProductRepository
     {
 
 
-        if(Storage::disk('local')->exists('images/products'.'/'. $old))
+
+        if(Storage::exists(Storage::url(self::IMAGE_PATH).$old))
         {
-            Storage::disk('local')->delete('images/products' . '/' .$old);
+            Storage::delete(Storage::url(self::IMAGE_PATH).$old);
         };
 
         return $this->createImageEntity($new);
