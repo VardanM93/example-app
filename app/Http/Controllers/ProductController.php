@@ -83,6 +83,7 @@ class ProductController extends Controller
     }
 
     /**
+     * Delete the specified resource from storage
      * @param int $id
      * @return JsonResponse
      */

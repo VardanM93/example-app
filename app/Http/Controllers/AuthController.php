@@ -32,6 +32,9 @@ class AuthController extends Controller
      */
     public function register(RegisterFormRequest $request):JsonResponse
     {
+        if(auth()->user()->tokens()){
+            $this->logout();
+        }
 
         $user = $this->userRepository->createEntity(
             $request->name,
