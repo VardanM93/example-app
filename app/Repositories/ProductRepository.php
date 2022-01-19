@@ -27,7 +27,7 @@ class ProductRepository
             'user_id' => auth()->id(),
             'name' => $name,
             'description' => $description,
-            'image' => $this->createImageEntity($image)
+            'image' => $this->saveImage($image)
         ]);
     }
 
@@ -56,7 +56,7 @@ class ProductRepository
 
         $product->name = $name;
         $product->description = $description;
-        $product->image = $this->updateImageEntity($product->image, $image);
+        $product->image = $this->updateImage($product->image, $image);
         $product->save();
 
         return $product;
@@ -70,19 +70,12 @@ class ProductRepository
     public function deleteEntity(int $id): int
     {
 
-        $product = Product::find($id);
-        $image = $product->image;
-
-
-        if ($result = $product->destroy($id))
+        if ($product = Product::find($id))
         {
-            if (Storage::exists(Storage::url(self::IMAGE_PATH).$image)){
-
-                Storage::delete(Storage::url(self::IMAGE_PATH).$image);
-            }
+            $this->deleteImage($product->image);
         }
 
-        return $result;
+        return $product->destroy($id);
 
     }
 
@@ -90,35 +83,42 @@ class ProductRepository
      * @param $image
      * @return string|null
      */
-    public function createImageEntity($image): ?string
+    public function saveImage($image): ?string
     {
 
-            $fileName = $image->hashName();
+        $fileName = $image->hashName();
 
-            Storage::put(Storage::url(self::IMAGE_PATH),$image);
+        Storage::put(Storage::url(self::IMAGE_PATH),$image);
 
-
-            return $fileName;
+        return $fileName;
 
     }
-
 
     /**
      * @param $old
      * @param $new
      * @return string|null
      */
-    public function updateImageEntity($old,$new): ?string
+    public function updateImage($old,$new): ?string
     {
 
-        if ($res = $this->createImageEntity($new)) {
+        if (!is_null($new)){
 
-            if (Storage::exists(Storage::url(self::IMAGE_PATH) . $old)) {
-                Storage::delete(Storage::url(self::IMAGE_PATH) . $old);
-            };
+            $this->deleteImage($old);
+
+            return  $this->saveImage($new);
         }
 
-        return $res;
+        return $old;
+
+    }
+
+
+    public function deleteImage($path): bool
+    {
+
+       return Storage::delete(Storage::url(self::IMAGE_PATH) . $path);
+
     }
 
 }
