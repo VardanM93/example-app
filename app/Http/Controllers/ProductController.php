@@ -31,7 +31,7 @@ class ProductController extends Controller
 
         $products = $this->productRepository->showAllEntity();
 
-
+        dd($products);
         return response()->json(
             new ProductResource($products),
             ResponseAlias::HTTP_OK);

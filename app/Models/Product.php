@@ -14,9 +14,6 @@ class Product extends Model
 {
     use HasFactory;
 
-
-
-
     /**
      * @var string[]
      */

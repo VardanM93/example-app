@@ -93,19 +93,13 @@ class ProductRepository
     public function createImageEntity($image): ?string
     {
 
-
-
-        if ($image){
-
             $fileName = $image->hashName();
 
             Storage::put(Storage::url(self::IMAGE_PATH),$image);
 
+
             return $fileName;
-        }
 
-
-       return Null;
     }
 
 
@@ -117,14 +111,14 @@ class ProductRepository
     public function updateImageEntity($old,$new): ?string
     {
 
+        if ($res = $this->createImageEntity($new)) {
 
+            if (Storage::exists(Storage::url(self::IMAGE_PATH) . $old)) {
+                Storage::delete(Storage::url(self::IMAGE_PATH) . $old);
+            };
+        }
 
-        if(Storage::exists(Storage::url(self::IMAGE_PATH).$old))
-        {
-            Storage::delete(Storage::url(self::IMAGE_PATH).$old);
-        };
-
-        return $this->createImageEntity($new);
+        return $res;
     }
 
 }
