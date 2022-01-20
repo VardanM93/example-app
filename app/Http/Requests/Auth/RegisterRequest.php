@@ -1,16 +1,22 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * @property mixed $name
- * @property mixed $description
- * @property mixed $image
+ * Class RegisterRequest
+ * @package App\Http\Requests\Auth
+ *
+ * @property string $name
+ * @property string $email
+ * @property string $password
+ *
  */
-class ProductFormRequest extends FormRequest
+class RegisterRequest extends FormRequest
 {
+
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -23,15 +29,15 @@ class ProductFormRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
+     *
      * @return array
      */
     public function rules(): array
     {
-        return
-        [
+        return [
             'name' => 'required|string',
-            'description' => 'required|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            'email' => 'required|string|unique:users,email',
+            'password' => 'required|string|confirmed',
         ];
     }
 }

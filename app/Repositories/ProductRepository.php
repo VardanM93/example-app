@@ -3,28 +3,49 @@
 namespace App\Repositories;
 
 use App\Models\Product;
-use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 
-
+/**
+ * Class ProductRepository
+ *
+ * @property-read int $id
+ * @property-read int $user_id
+ * @property-read string $name
+ * @property-read string $description
+ * @property-read string $image
+ * @package App\Repositories
+ *
+ */
 class ProductRepository
 {
+    /**
+     * Get Product by id and user_id
+     * @param int $id
+     * @param int $user_id
+     * @return Product
+     */
+    public function getEntityById(int $id, int $user_id): Product
+    {
 
-    const IMAGE_PATH = "images/products/";
+        return Product::where('id',$id)->where('user_id',$user_id)
+        ->first();
+
+    }
 
     /**
+     * Create Product in storage
      * @param string $name
      * @param string $description
      * @param object $image
+     * @param int $user_id
      * @return Product
      */
-    public function createEntity(string $name, string $description, object $image):Product
+    public function createEntity(string $name, string $description, object $image, int $user_id):Product
     {
-
 
         return Product::create([
 
-            'user_id' => auth()->id(),
+            'user_id' => $user_id,
             'name' => $name,
             'description' => $description,
             'image' => $this->saveImage($image)
@@ -32,31 +53,41 @@ class ProductRepository
     }
 
     /**
-     * @return mixed
+     * Get all current user's Products
+     * @param int $user_id
+     * @return object
      */
-    public function showAllEntity()
+    public function getAllEntities(int $user_id): object
     {
-
-        return User::find(auth()->id())->products;
+        return Product::where('user_id',$user_id)->get();
     }
 
-
     /**
-     * @param string $name
-     * @param string $description
-     * @param object $image
+     * Update Product in storage
+     * @param string|null $name
+     * @param string|null $description
+     * @param object|null $image
      * @param int $id
+     * @param int $user_id
      * @return Product
      */
-    public function updateEntity(string $name, string $description, object $image,int $id):Product
+    public function updateEntity(?string $name, ?string $description, ?object  $image, int $id, int $user_id):Product
     {
 
-        $product = Product::find($id);
 
+        $product = $this->getEntityById($id, $user_id);
+
+
+        if (!is_null($image))
+        {
+            $product->image = $this->updateImage($product->image, $image);
+
+        }
 
         $product->name = $name;
         $product->description = $description;
-        $product->image = $this->updateImage($product->image, $image);
+
+
         $product->save();
 
         return $product;
@@ -64,15 +95,18 @@ class ProductRepository
     }
 
     /**
+     * Remove Product from storage
      * @param int $id
+     * @param int $user_id
      * @return int
      */
-    public function deleteEntity(int $id): int
+    public function deleteEntity(int $id, int $user_id): int
     {
 
-        if ($product = Product::find($id))
+        if ($product = $this->getEntityById($id, $user_id))
         {
             $this->deleteImage($product->image);
+
         }
 
         return $product->destroy($id);
@@ -80,6 +114,7 @@ class ProductRepository
     }
 
     /**
+     * Store image in storage
      * @param $image
      * @return string|null
      */
@@ -88,36 +123,33 @@ class ProductRepository
 
         $fileName = $image->hashName();
 
-        Storage::put(Storage::url(self::IMAGE_PATH),$image);
+        $image->storeAs(Product::IMAGE_PATH,$fileName);
 
         return $fileName;
 
     }
 
     /**
+     * Update image in storage and remove old
      * @param $old
      * @param $new
      * @return string|null
      */
     public function updateImage($old,$new): ?string
     {
-
-        if (!is_null($new)){
-
-            $this->deleteImage($old);
-
-            return  $this->saveImage($new);
-        }
-
-        return $old;
-
+        $this->deleteImage($old);
+        return  $this->saveImage($new);
     }
 
-
+    /**
+     * Remove image from storage
+     * @param $path
+     * @return bool
+     */
     public function deleteImage($path): bool
     {
 
-       return Storage::delete(Storage::url(self::IMAGE_PATH) . $path);
+       return Storage::delete((Product::IMAGE_PATH) . $path);
 
     }
 

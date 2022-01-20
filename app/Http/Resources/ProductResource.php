@@ -2,17 +2,15 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Resources\Json\JsonResource;
-
 /**
- * @property mixed $image
- * @property mixed $description
- * @property mixed $name
- * @property mixed $user_id
- * @property mixed $id
+ * Class ProductResource
+ * @package App\Http\Resources
+ *
  */
-class ProductResource extends JsonResource
+class ProductResource extends BaseResource
 {
+
+
     /**
      * @param $request
      * @return array
@@ -21,11 +19,11 @@ class ProductResource extends JsonResource
     public function toArray($request): array
     {
         return [
-            'id' => $this->id,
-            'user_id' => $this->user_id,
-            'name' => $this->name,
-            'description' => $this->description,
-            'image' => $this->image
+            'id' => $this->resource->id,
+            'user_id' => $this->resource->user_id,
+            'name' => $this->resource->name,
+            'description' => $this->resource->description,
+            'image' => $this->resource->image
         ];
     }
 }
