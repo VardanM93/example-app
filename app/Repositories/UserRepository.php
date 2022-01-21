@@ -14,10 +14,8 @@ use App\Models\User;
  * @property-read string $image
  *
  */
-
 class UserRepository
 {
-
     /**
      * Create User
      * @param string $name
@@ -36,16 +34,12 @@ class UserRepository
 
     /**
      * Check User Email
-     * @param string|null $email
+     * @param string $email
      * @return mixed
      */
-    public function checkEntity(?string $email)
+    public function checkEntity(string $email)
     {
-
-        return  User::where('email', $email)->first();
+        return  User::where('email', $email)->firstOrFail();
     }
-
-
-
 
 }

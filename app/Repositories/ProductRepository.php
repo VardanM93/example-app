@@ -7,14 +7,12 @@ use Illuminate\Support\Facades\Storage;
 
 /**
  * Class ProductRepository
- *
+ * @package App\Repositories
  * @property-read int $id
  * @property-read int $user_id
  * @property-read string $name
  * @property-read string $description
  * @property-read string $image
- * @package App\Repositories
- *
  */
 class ProductRepository
 {
@@ -27,8 +25,8 @@ class ProductRepository
     public function getEntityById(int $id, int $user_id): Product
     {
 
-        return Product::where('id',$id)->where('user_id',$user_id)
-        ->first();
+        return Product::where('id',$id)
+                        ->where('user_id',$user_id)->firstOrFail();
 
     }
 
@@ -74,9 +72,7 @@ class ProductRepository
     public function updateEntity(?string $name, ?string $description, ?object  $image, int $id, int $user_id):Product
     {
 
-
         $product = $this->getEntityById($id, $user_id);
-
 
         if (!is_null($image))
         {
@@ -87,8 +83,7 @@ class ProductRepository
         $product->name = $name;
         $product->description = $description;
 
-
-        $product->save();
+        $product->update();
 
         return $product;
 
@@ -98,18 +93,17 @@ class ProductRepository
      * Remove Product from storage
      * @param int $id
      * @param int $user_id
-     * @return int
+     * @return null
      */
-    public function deleteEntity(int $id, int $user_id): int
+    public function deleteEntity(int $id, int $user_id)
     {
 
-        if ($product = $this->getEntityById($id, $user_id))
-        {
-            $this->deleteImage($product->image);
+        $product = $this->getEntityById($id, $user_id);
 
-        }
+        $this->deleteImage($product->image);
+        $product->destroy($id);
 
-        return $product->destroy($id);
+        return   null;
 
     }
 
@@ -122,8 +116,7 @@ class ProductRepository
     {
 
         $fileName = $image->hashName();
-
-        $image->storeAs(Product::IMAGE_PATH,$fileName);
+        $image->storeAs(Product::PRODUCT_IMAGE_PATH . "/",$fileName);
 
         return $fileName;
 
@@ -148,9 +141,7 @@ class ProductRepository
      */
     public function deleteImage($path): bool
     {
-
-       return Storage::delete((Product::IMAGE_PATH) . $path);
-
+       return Storage::delete((Product::PRODUCT_IMAGE_PATH) . "/" . $path);
     }
 
 }

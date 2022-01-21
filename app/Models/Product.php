@@ -19,7 +19,7 @@ class Product extends Model
 {
     use HasFactory;
 
-    const IMAGE_PATH = "products/";
+    const PRODUCT_IMAGE_PATH = "products";
 
     /**
      * @var string[]
@@ -32,7 +32,5 @@ class Product extends Model
         'image'
 
     ];
-
-
 
 }

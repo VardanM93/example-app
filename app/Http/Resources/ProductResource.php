@@ -9,13 +9,10 @@ namespace App\Http\Resources;
  */
 class ProductResource extends BaseResource
 {
-
-
     /**
      * @param $request
      * @return array
      */
-
     public function toArray($request): array
     {
         return [

@@ -9,8 +9,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @package App\Http\Resources
  *
  */
-
-
 abstract class BaseResource extends JsonResource
 {
 
