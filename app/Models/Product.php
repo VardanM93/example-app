@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class Product Model
@@ -21,6 +22,7 @@ class Product extends Model
 
     const PRODUCT_IMAGE_PATH = "products";
 
+
     /**
      * @var string[]
      */
@@ -32,5 +34,10 @@ class Product extends Model
         'image'
 
     ];
+
+    public function tags(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany();
+    }
 
 }

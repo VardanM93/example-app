@@ -65,12 +65,13 @@ class ProductController extends BaseController
      */
     public function store(CreateRequest $request)
     {
-
         $product = $this->productRepository->createEntity(
             $request->name,
             $request->description,
             $request->image,
-            Auth::id()
+            Auth::id(),
+            [1,2,3]
+
         );
 
         return $this->response(

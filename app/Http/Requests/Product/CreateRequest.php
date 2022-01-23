@@ -9,6 +9,7 @@ use Illuminate\Foundation\Http\FormRequest;
  * @property string $name
  * @property string $description
  * @property object $image
+ * @property array $tags
  * @package App\Http\Requests\Product
  */
 class CreateRequest extends FormRequest
@@ -35,7 +36,8 @@ class CreateRequest extends FormRequest
             [
                 'name' => 'required|string',
                 'description' => 'required|string',
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'tags'  => 'required|array'
             ];
     }
 }

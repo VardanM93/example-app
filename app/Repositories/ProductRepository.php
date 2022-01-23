@@ -24,7 +24,6 @@ class ProductRepository
      */
     public function getEntityById(int $id, int $user_id): Product
     {
-
         return Product::where('id',$id)
                         ->where('user_id',$user_id)->firstOrFail();
 
@@ -38,16 +37,20 @@ class ProductRepository
      * @param int $user_id
      * @return Product
      */
-    public function createEntity(string $name, string $description, object $image, int $user_id):Product
+    public function createEntity(string $name, string $description, object $image, int $user_id, array $tags):Product
     {
-
-        return Product::create([
+        $product =  Product::create([
 
             'user_id' => $user_id,
             'name' => $name,
             'description' => $description,
             'image' => $this->saveImage($image)
         ]);
+
+        $product->tags()->attach($tags);
+
+        return $product;
+
     }
 
     /**
@@ -57,7 +60,11 @@ class ProductRepository
      */
     public function getAllEntities(int $user_id): object
     {
-        return Product::where('user_id',$user_id)->get();
+
+
+        return    Product::where('user_id',$user_id)->get();
+
+
     }
 
     /**
@@ -69,7 +76,7 @@ class ProductRepository
      * @param int $user_id
      * @return Product
      */
-    public function updateEntity(?string $name, ?string $description, ?object  $image, int $id, int $user_id):Product
+    public function updateEntity(string $name, string $description, ?object  $image, int $id, int $user_id, array $tags):Product
     {
 
         $product = $this->getEntityById($id, $user_id);
@@ -84,6 +91,8 @@ class ProductRepository
         $product->description = $description;
 
         $product->update();
+
+
 
         return $product;
 
