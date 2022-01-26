@@ -7,22 +7,26 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ProductCreatedNotification extends Notification
+class ProductCreateNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
     /**
-     * @var array $data
+     * @var string $user_name
+     * @var string $product_name
      */
-    private array  $data;
+    private string  $user_name;
+    private string  $product_name;
+
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(array $data)
+    public function __construct(string $user_name, string $product_name)
     {
-        $this->data = $data;
+        $this->user_name = $user_name;
+        $this->product_name = $product_name;
     }
 
     /**
@@ -44,12 +48,12 @@ class ProductCreatedNotification extends Notification
      */
     public function toMail($notifiable): MailMessage
     {
-        return (new MailMessage)
-                    ->line("Dear  " . $this->data['user_name'] .
-                        " Product-" . $this->data['product_name']
-                        . " created successful.")
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+        return (new MailMessage)->markdown('mail.product.create',
+            [
+                'user_name' => $this->user_name,
+                'product_name' => $this->product_name
+            ]
+        );
     }
 
     /**

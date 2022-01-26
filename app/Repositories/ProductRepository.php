@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Product;
 use App\Models\User;
-use App\Notifications\ProductCreatedNotification;
+use App\Notifications\ProductCreateNotification;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -53,12 +53,7 @@ class ProductRepository
 
         $user = User::first();
 
-        $data = [
-            'user_name' => $user->name,
-            'product_name' => $product->name
-        ];
-
-        $user->notify(new ProductCreatedNotification($data));
+        $user->notify(new ProductCreateNotification($user->name, $product->name));
 
         return $product;
 
