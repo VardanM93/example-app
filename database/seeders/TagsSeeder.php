@@ -6,6 +6,10 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
+/**
+ * Class TagsSeeder
+ * @package Database\Seeders
+ * */
 class TagsSeeder extends Seeder
 {
     /**

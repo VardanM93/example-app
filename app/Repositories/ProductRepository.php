@@ -60,11 +60,7 @@ class ProductRepository
      */
     public function getAllEntities(int $user_id): object
     {
-
-
-        return    Product::where('user_id',$user_id)->get();
-
-
+        return Product::where('user_id',$user_id)->get();
     }
 
     /**
@@ -91,6 +87,14 @@ class ProductRepository
         $product->description = $description;
 
         $product->update();
+
+        if (sizeof($tags)){
+
+            $product->tags()->detach($product->tags()->get());
+
+            $product->tags()->attach($tags);
+
+        }
 
 
 

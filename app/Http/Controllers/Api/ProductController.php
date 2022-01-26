@@ -52,7 +52,6 @@ class ProductController extends BaseController
     {
 
         $products = $this->productRepository->getAllEntities(Auth::id());
-
         return $this->response( ProductResource::collection($products))
             ->setStatusCode(Response::HTTP_OK);
 
@@ -70,7 +69,7 @@ class ProductController extends BaseController
             $request->description,
             $request->image,
             Auth::id(),
-            [1,2,3]
+            $request->tags
 
         );
 
@@ -93,7 +92,8 @@ class ProductController extends BaseController
             $request->description,
             $request->image,
             $id,
-            Auth::id()
+            Auth::id(),
+            $request->tags
         );
 
         return $this->response(

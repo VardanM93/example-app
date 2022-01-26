@@ -6,32 +6,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Product Model
+ * Class Tag Model
  * @package App\Models
- * @property string $description
- * @property string|null $image
- * @property string $name
- * @method static where(string $string, int|null $id)
- * @method static find($id)
- * @method static create(array $array)
  */
-class Product extends Model
+class Tag extends Model
 {
     use HasFactory;
-
-    const PRODUCT_IMAGE_PATH = "products";
-
 
     /**
      * @var string[]
      */
     protected $fillable = [
-
-        'user_id',
         'name',
-        'description',
-        'image'
-
     ];
 
     /**
@@ -39,7 +25,6 @@ class Product extends Model
      */
     public function tags(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(Tag::class);
+        return $this->belongsToMany(Product::class);
     }
-
 }
