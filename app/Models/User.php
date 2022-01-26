@@ -13,6 +13,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static where(string $string, string|null $email)
  * @method static create(array $array)
  * @method static find(int|string|null $id)
+ * @method static first()
  * @property string $token
  */
 class User extends Authenticatable
