@@ -1,7 +1,7 @@
 @component('mail::message')
 
 ## Hello Mr/Mrs {{$user_name}}
-## Product - {{$user_name}} has been created successful
+## Product - {{$product_name}} has been created successful
 
 
 
